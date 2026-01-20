@@ -14,16 +14,25 @@ import {
   setSearchQuery,
   setSorting,
 } from '../store/assetsSlice'
+import LoadingPlaceholder from '../components/LoadingPlaceholder'
 import { formatCurrency, formatNumber, formatPercent } from '../utils/formatters'
 
+/**
+ * Table skeleton row placeholder.
+ * @returns {JSX.Element}
+ */
 const SkeletonRow = () => (
-  <div className="grid grid-cols-5 gap-4 border-b border-gray-100 py-3">
-    {Array.from({ length: 5 }).map((_, index) => (
-      <div key={index} className="h-4 rounded bg-gray-200 animate-pulse" />
+  <div className="grid grid-cols-6 gap-4 border-b border-gray-100 py-3">
+    {Array.from({ length: 6 }).map((_, index) => (
+      <LoadingPlaceholder key={index} className="h-4 w-full" />
     ))}
   </div>
 )
 
+/**
+ * Assets page with filtering, search, and sortable table.
+ * @returns {JSX.Element}
+ */
 const Assets = () => {
   const dispatch = useDispatch()
   const { items, loading, error, lastUpdated, filterType, searchQuery, sorting } =
@@ -108,6 +117,11 @@ const Assets = () => {
     },
   })
 
+  /**
+   * Render sort direction indicator for a column.
+   * @param {import('@tanstack/react-table').Column} column
+   * @returns {string|null}
+   */
   const sortIndicator = (column) => {
     if (!column.getIsSorted()) return null
     return column.getIsSorted() === 'desc' ? '↓' : '↑'

@@ -11,49 +11,56 @@ describe('Dashboard', () => {
     const { default: Dashboard } = await import('../pages/Dashboard')
     const preloadedState = {
       dashboard: {
-        data: {
-          topGainers: [
-            {
-              symbol: 'AAPL',
-              name: 'Apple Inc.',
-              currentPrice: 180,
-              changePercent: 2.5,
-            },
-          ],
-          topLosers: [
-            {
-              symbol: 'TSLA',
-              name: 'Tesla Inc.',
-              currentPrice: 240,
-              changePercent: -1.2,
-            },
-          ],
-          recentNews: [
-            {
-              id: 'news-1',
-              title: 'Market rallies',
-              source: 'Pulse Wire',
-              timestamp: '2024-01-01T10:00:00.000Z',
-              category: 'macro',
-            },
-          ],
-          activeAlerts: [
-            {
-              id: 'alert-1',
-              message: 'Price spike detected',
-              severity: 'high',
-              timestamp: '2024-01-01T09:00:00.000Z',
-            },
-          ],
+        dashboard: {
+          data: {
+            topGainers: [
+              {
+                symbol: 'AAPL',
+                name: 'Apple Inc.',
+                currentPrice: 180,
+                changePercent: 2.5,
+              },
+            ],
+            topLosers: [
+              {
+                symbol: 'TSLA',
+                name: 'Tesla Inc.',
+                currentPrice: 240,
+                changePercent: -1.2,
+              },
+            ],
+            recentNews: [
+              {
+                id: 'news-1',
+                title: 'Market rallies',
+                source: 'Pulse Wire',
+                timestamp: '2024-01-01T10:00:00.000Z',
+                category: 'macro',
+              },
+            ],
+            activeAlerts: [
+              {
+                id: 'alert-1',
+                message: 'Price spike detected',
+                severity: 'high',
+                timestamp: '2024-01-01T09:00:00.000Z',
+              },
+            ],
+          },
+          loading: false,
+          error: null,
+          lastUpdated: 1704100000000,
         },
         portfolio: {
-          totalValue: 1000,
-          totalChange: 50,
-          totalChangePercent: 5,
+          data: {
+            totalValue: 1000,
+            totalChange: 50,
+            totalChangePercent: 5,
+          },
+          loading: false,
+          error: null,
+          lastUpdated: 1704100000000,
         },
-        loading: false,
-        error: null,
-        lastUpdated: 1704100000000,
       },
     }
 

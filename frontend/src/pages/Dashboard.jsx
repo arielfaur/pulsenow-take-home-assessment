@@ -2,21 +2,20 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchDashboard, fetchPortfolio } from '../store/dashboardSlice'
 import usePolling from '../hooks/usePolling'
+import LoadingPlaceholder from '../components/LoadingPlaceholder'
 import {
   formatCurrency,
   formatPercent,
   formatTimestamp,
 } from '../utils/formatters'
 
-const SkeletonBlock = ({ className }) => (
-  <div className={`animate-pulse rounded bg-gray-200 ${className}`} />
-)
-
+/**
+ * Dashboard page with portfolio, movers, news, and alerts.
+ * @returns {JSX.Element}
+ */
 const Dashboard = () => {
   const dispatch = useDispatch()
-  const { data, portfolio, loading, error, lastUpdated } = useSelector(
-    (state) => state.dashboard
-  )
+  const { dashboard, portfolio } = useSelector((state) => state.dashboard)
 
   const pollDashboard = useCallback(() => {
     dispatch(fetchDashboard())
@@ -25,12 +24,22 @@ const Dashboard = () => {
 
   usePolling(pollDashboard, 30000, [pollDashboard])
 
-  const portfolioSummary = portfolio || data?.portfolio
-  const topGainers = data?.topGainers?.slice(0, 3) || []
-  const topLosers = data?.topLosers?.slice(0, 3) || []
-  const recentNews = data?.recentNews?.slice(0, 5) || []
-  const activeAlerts = data?.activeAlerts?.slice(0, 5) || []
+  const portfolioSummary = portfolio?.data || dashboard?.data?.portfolio
+  const topGainers = dashboard?.data?.topGainers?.slice(0, 3) || []
+  const topLosers = dashboard?.data?.topLosers?.slice(0, 3) || []
+  const recentNews = dashboard?.data?.recentNews?.slice(0, 5) || []
+  const activeAlerts = dashboard?.data?.activeAlerts?.slice(0, 5) || []
+  const lastUpdated =
+    dashboard?.lastUpdated || portfolio?.lastUpdated || null
+  const error = dashboard?.error || portfolio?.error
+  const isDashboardLoading = dashboard?.loading && !dashboard?.data
+  const isPortfolioLoading = portfolio?.loading && !portfolio?.data
 
+  /**
+   * Return Tailwind color class for positive/negative values.
+   * @param {number|string} value
+   * @returns {string}
+   */
   const changeColor = (value) =>
     Number(value) >= 0 ? 'text-green-600' : 'text-red-600'
 
@@ -54,11 +63,11 @@ const Dashboard = () => {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="bg-white p-6 rounded-lg shadow lg:col-span-1">
           <h2 className="text-lg font-semibold mb-4">Portfolio Summary</h2>
-          {!portfolioSummary && loading ? (
+          {!portfolioSummary && isPortfolioLoading ? (
             <div className="space-y-3">
-              <SkeletonBlock className="h-8 w-32" />
-              <SkeletonBlock className="h-6 w-40" />
-              <SkeletonBlock className="h-6 w-24" />
+              <LoadingPlaceholder className="h-8 w-32" />
+              <LoadingPlaceholder className="h-6 w-40" />
+              <LoadingPlaceholder className="h-6 w-24" />
             </div>
           ) : (
             <div className="space-y-2">
@@ -94,9 +103,9 @@ const Dashboard = () => {
                 Gainers
               </p>
               <div className="space-y-3">
-                {loading && topGainers.length === 0
+                {isDashboardLoading && topGainers.length === 0
                   ? Array.from({ length: 3 }).map((_, index) => (
-                      <SkeletonBlock key={index} className="h-12 w-full" />
+                      <LoadingPlaceholder key={index} className="h-12 w-full" />
                     ))
                   : topGainers.map((asset) => (
                       <div
@@ -125,9 +134,9 @@ const Dashboard = () => {
                 Losers
               </p>
               <div className="space-y-3">
-                {loading && topLosers.length === 0
+                {isDashboardLoading && topLosers.length === 0
                   ? Array.from({ length: 3 }).map((_, index) => (
-                      <SkeletonBlock key={index} className="h-12 w-full" />
+                      <LoadingPlaceholder key={index} className="h-12 w-full" />
                     ))
                   : topLosers.map((asset) => (
                       <div
@@ -158,9 +167,9 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4">Recent News</h2>
           <div className="space-y-4">
-            {loading && recentNews.length === 0
+            {isDashboardLoading && recentNews.length === 0
               ? Array.from({ length: 5 }).map((_, index) => (
-                  <SkeletonBlock key={index} className="h-12 w-full" />
+                  <LoadingPlaceholder key={index} className="h-12 w-full" />
                 ))
               : recentNews.map((news) => (
                   <div
@@ -184,9 +193,9 @@ const Dashboard = () => {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-lg font-semibold mb-4">Active Alerts</h2>
           <div className="space-y-4">
-            {loading && activeAlerts.length === 0
+            {isDashboardLoading && activeAlerts.length === 0
               ? Array.from({ length: 5 }).map((_, index) => (
-                  <SkeletonBlock key={index} className="h-12 w-full" />
+                  <LoadingPlaceholder key={index} className="h-12 w-full" />
                 ))
               : activeAlerts.map((alert) => {
                   const severityColor = {

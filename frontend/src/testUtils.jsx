@@ -5,6 +5,14 @@ import { render } from '@testing-library/react'
 import dashboardReducer from './store/dashboardSlice'
 import assetsReducer from './store/assetsSlice'
 
+/**
+ * Render a component tree with a Redux store provider.
+ * @param {React.ReactElement} ui
+ * @param {object} options
+ * @param {object} [options.preloadedState]
+ * @param {import('@reduxjs/toolkit').EnhancedStore} [options.store]
+ * @returns {{store: import('@reduxjs/toolkit').EnhancedStore}}
+ */
 export const renderWithStore = (
   ui,
   {

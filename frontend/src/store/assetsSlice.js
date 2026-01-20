@@ -1,15 +1,31 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getCrypto, getStocks } from '../services/api'
 
+/**
+ * Normalize asset data with a consistent type marker.
+ * @param {object} asset
+ * @param {'stock'|'crypto'} type
+ * @returns {object}
+ */
 const normalizeAsset = (asset, type) => ({
   ...asset,
   assetType: type,
 })
 
+/**
+ * Fetch stocks and crypto assets and return a unified list.
+ * @returns {Promise<object[]>}
+ */
 export const fetchAssets = createAsyncThunk(
   'assets/fetchAssets',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
+      const state = getState().assets
+      const isInitialLoad = !state?.items?.length
+      if (isInitialLoad) {
+        // TODO: Remove this artificial delay once backend latency is realistic.
+        await new Promise((resolve) => setTimeout(resolve, 500))
+      }
       const [stocksResponse, cryptoResponse] = await Promise.all([
         getStocks(),
         getCrypto(),
@@ -26,6 +42,9 @@ export const fetchAssets = createAsyncThunk(
   }
 )
 
+/**
+ * Assets slice state for unified assets table.
+ */
 const assetsSlice = createSlice({
   name: 'assets',
   initialState: {
