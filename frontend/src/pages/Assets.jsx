@@ -62,6 +62,7 @@ const Assets = () => {
       {
         accessorKey: 'name',
         header: 'Name',
+        meta: { className: 'hidden md:block' },
       },
       {
         accessorKey: 'currentPrice',
@@ -80,11 +81,13 @@ const Assets = () => {
       {
         accessorKey: 'volume',
         header: 'Volume',
+        meta: { className: 'hidden md:block' },
         cell: (info) => formatNumber(info.getValue()),
       },
       {
         accessorKey: 'assetType',
         header: 'Type',
+        meta: { className: 'hidden md:block' },
         cell: (info) => (
           <span className="text-xs uppercase bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
             {info.getValue()}
@@ -179,16 +182,16 @@ const Assets = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <div className="min-w-[720px]">
-            <div className="grid grid-cols-6 gap-4 border-b border-gray-200 pb-2 text-sm font-semibold text-gray-600 dark:border-gray-800 dark:text-gray-400">
+        <div className="overflow-x-hidden">
+          <div className="w-full">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4 border-b border-gray-200 pb-2 text-sm font-semibold text-gray-600 dark:border-gray-800 dark:text-gray-400">
               {table.getHeaderGroups().map((headerGroup) =>
                 headerGroup.headers.map((header) => (
                   <button
                     key={header.id}
                     type="button"
                     onClick={header.column.getToggleSortingHandler()}
-                    className="flex items-center gap-2 text-left"
+                    className={`flex items-center gap-2 text-left ${header.column.columnDef.meta?.className || ''}`}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                     <span className="text-xs text-gray-400 dark:text-gray-500">
@@ -208,9 +211,9 @@ const Assets = () => {
             ) : (
               <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {table.getRowModel().rows.map((row) => (
-                  <div key={row.id} className="grid grid-cols-6 gap-4 py-3 text-sm">
+                  <div key={row.id} className="grid grid-cols-3 md:grid-cols-6 gap-4 py-3 text-sm">
                     {row.getVisibleCells().map((cell) => (
-                      <div key={cell.id}>
+                      <div key={cell.id} className={cell.column.columnDef.meta?.className || ''}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </div>
                     ))}
