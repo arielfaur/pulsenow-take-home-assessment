@@ -10,6 +10,10 @@ const ThemeContext = createContext(null)
 export const ThemeProvider = ({ children }) => {
   const getInitialTheme = () => {
     if (typeof window === 'undefined') return 'light'
+    const storedTheme = window.localStorage.getItem('pulse-theme')
+    if (storedTheme === 'dark' || storedTheme === 'light') {
+      return storedTheme
+    }
     return window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light'
@@ -20,6 +24,9 @@ export const ThemeProvider = ({ children }) => {
   useEffect(() => {
     if (typeof document === 'undefined') return
     document.documentElement.classList.toggle('dark', theme === 'dark')
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem('pulse-theme', theme)
+    }
   }, [theme])
 
   const value = useMemo(
