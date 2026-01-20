@@ -55,13 +55,13 @@ const Dashboard = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-1">
+        <div className="bg-white p-6 rounded-lg shadow lg:col-span-1 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Portfolio Summary</h2>
           {!portfolioSummary && isPortfolioLoading ? (
             <div className="space-y-3">
@@ -90,16 +90,16 @@ const Dashboard = () => {
                   {formatPercent(portfolioSummary?.totalChangePercent)}
                 </span>
               </div>
-              <p className="text-sm text-gray-500">24h portfolio change</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">24h portfolio change</p>
             </div>
           )}
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-2">
+        <div className="bg-white p-6 rounded-lg shadow lg:col-span-2 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Top Movers</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <p className="text-sm font-semibold text-gray-500 uppercase mb-3">
+              <p className="text-sm font-semibold text-gray-500 uppercase mb-3 dark:text-gray-400">
                 Gainers
               </p>
               <div className="space-y-3">
@@ -110,11 +110,11 @@ const Dashboard = () => {
                   : topGainers.map((asset) => (
                       <div
                         key={`gainer-${asset.symbol}`}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3"
+                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3 dark:border-gray-800"
                       >
                         <div>
                           <p className="font-semibold">{asset.symbol}</p>
-                          <p className="text-sm text-gray-500">{asset.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-semibold">
@@ -130,7 +130,7 @@ const Dashboard = () => {
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-gray-500 uppercase mb-3">
+              <p className="text-sm font-semibold text-gray-500 uppercase mb-3 dark:text-gray-400">
                 Losers
               </p>
               <div className="space-y-3">
@@ -141,11 +141,11 @@ const Dashboard = () => {
                   : topLosers.map((asset) => (
                       <div
                         key={`loser-${asset.symbol}`}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3"
+                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3 dark:border-gray-800"
                       >
                         <div>
                           <p className="font-semibold">{asset.symbol}</p>
-                          <p className="text-sm text-gray-500">{asset.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-semibold">
@@ -164,25 +164,25 @@ const Dashboard = () => {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Recent News</h2>
           <div className="space-y-4">
             {isDashboardLoading && recentNews.length === 0
-              ? Array.from({ length: 5 }).map((_, index) => (
+                ? Array.from({ length: 5 }).map((_, index) => (
                   <LoadingPlaceholder key={index} className="h-12 w-full" />
                 ))
               : recentNews.map((news) => (
                   <div
                     key={news.id}
-                    className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
+                    className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0 dark:border-gray-800"
                   >
                     <div>
                       <p className="font-semibold">{news.title}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {news.source} • {formatTimestamp(news.timestamp)}
                       </p>
                     </div>
-                    <span className="text-xs font-semibold uppercase bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    <span className="text-xs font-semibold uppercase bg-gray-100 text-gray-600 px-2 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300">
                       {news.category}
                     </span>
                   </div>
@@ -190,7 +190,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
           <h2 className="text-lg font-semibold mb-4">Active Alerts</h2>
           <div className="space-y-4">
             {isDashboardLoading && activeAlerts.length === 0
@@ -207,11 +207,11 @@ const Dashboard = () => {
                   return (
                     <div
                       key={alert.id}
-                      className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0"
+                      className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0 dark:border-gray-800"
                     >
                       <div>
                         <p className="font-semibold">{alert.message}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatTimestamp(alert.timestamp)}
                         </p>
                       </div>

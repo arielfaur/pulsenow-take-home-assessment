@@ -38,17 +38,20 @@ const Assets = () => {
   const { items, loading, error, lastUpdated, filterType, searchQuery, sorting } =
     useSelector((state) => state.assets)
 
+  // useCallback memoizes a function reference to prevent rerenders from resetting polling.
   const pollAssets = useCallback(() => {
     dispatch(fetchAssets())
   }, [dispatch])
 
   usePolling(pollAssets, 30000, [pollAssets])
 
+  // useMemo memoizes computed data to prevent rerenders from recalculating filtered rows.
   const filteredItems = useMemo(() => {
     if (filterType === 'all') return items
     return items.filter((asset) => asset.assetType === filterType)
   }, [items, filterType])
 
+  // useMemo memoizes computed data to prevent rerenders from rebuilding columns.
   const columns = useMemo(
     () => [
       {
@@ -139,22 +142,22 @@ const Assets = () => {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
-      <div className="bg-white p-6 rounded-lg shadow space-y-4">
+      <div className="bg-white p-6 rounded-lg shadow space-y-4 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
         <div className="flex flex-wrap items-center gap-4">
           <div>
-            <label htmlFor="asset-type-filter" className="text-sm font-semibold text-gray-600">
+            <label htmlFor="asset-type-filter" className="text-sm font-semibold text-gray-600 dark:text-gray-400">
               Asset Type
             </label>
             <select
               id="asset-type-filter"
               value={filterType}
               onChange={(event) => dispatch(setFilterType(event.target.value))}
-              className="mt-1 block rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pulse-primary"
+              className="mt-1 block rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pulse-primary dark:border-gray-800 dark:bg-gray-950"
             >
               <option value="all">All</option>
               <option value="stock">Stocks</option>
@@ -162,7 +165,7 @@ const Assets = () => {
             </select>
           </div>
           <div className="flex-1 min-w-[200px]">
-            <label htmlFor="asset-search" className="text-sm font-semibold text-gray-600">
+            <label htmlFor="asset-search" className="text-sm font-semibold text-gray-600 dark:text-gray-400">
               Search
             </label>
             <input
@@ -171,14 +174,14 @@ const Assets = () => {
               value={searchQuery}
               onChange={(event) => dispatch(setSearchQuery(event.target.value))}
               placeholder="Search by symbol or name"
-              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pulse-primary"
+              className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pulse-primary dark:border-gray-800 dark:bg-gray-950"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <div className="min-w-[720px]">
-            <div className="grid grid-cols-6 gap-4 border-b border-gray-200 pb-2 text-sm font-semibold text-gray-600">
+            <div className="grid grid-cols-6 gap-4 border-b border-gray-200 pb-2 text-sm font-semibold text-gray-600 dark:border-gray-800 dark:text-gray-400">
               {table.getHeaderGroups().map((headerGroup) =>
                 headerGroup.headers.map((header) => (
                   <button
@@ -188,7 +191,7 @@ const Assets = () => {
                     className="flex items-center gap-2 text-left"
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 dark:text-gray-500">
                       {sortIndicator(header.column)}
                     </span>
                   </button>
@@ -203,7 +206,7 @@ const Assets = () => {
                 ))}
               </div>
             ) : (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-gray-800">
                 {table.getRowModel().rows.map((row) => (
                   <div key={row.id} className="grid grid-cols-6 gap-4 py-3 text-sm">
                     {row.getVisibleCells().map((cell) => (
@@ -217,7 +220,7 @@ const Assets = () => {
             )}
 
             {!loading && table.getRowModel().rows.length === 0 && (
-              <div className="py-6 text-center text-sm text-gray-500">
+              <div className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
                 No assets match your filters.
               </div>
             )}
