@@ -119,7 +119,7 @@ const Assets = () => {
       if (!search) return true
       const symbol = String(row.original.symbol || '').toLowerCase()
       const name = String(row.original.name || '').toLowerCase()
-      return symbol.includes(search) || name.includes(search)
+      return symbol.startsWith(search) || name.startsWith(search)
     },
   })
 
