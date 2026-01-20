@@ -11,6 +11,8 @@ import {
 } from 'recharts'
 import { fetchPortfolio } from '../store/dashboardSlice'
 import LoadingPlaceholder from '../components/LoadingPlaceholder'
+import SectionCard from '../components/SectionCard'
+import PortfolioSummaryCard from '../components/PortfolioSummaryCard'
 import { formatCurrency, formatPercent } from '../utils/formatters'
 
 /**
@@ -56,44 +58,11 @@ const Portfolio = () => {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Portfolio Summary</h2>
-          {loading ? (
-            <div className="space-y-3">
-              <LoadingPlaceholder className="h-8 w-32" />
-              <LoadingPlaceholder className="h-6 w-40" />
-              <LoadingPlaceholder className="h-6 w-24" />
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-3xl font-bold">
-                {formatCurrency(data?.totalValue)}
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span
-                  className={`text-lg font-semibold ${changeColor(
-                    data?.totalChange
-                  )}`}
-                >
-                  {formatCurrency(data?.totalChange)}
-                </span>
-                <span
-                  className={`text-sm ${changeColor(
-                    data?.totalChangePercent
-                  )}`}
-                >
-                  {formatPercent(data?.totalChangePercent)}
-                </span>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                24h portfolio change
-              </p>
-            </div>
-          )}
-        </div>
+        <SectionCard title="Portfolio Summary" className="lg:col-span-1">
+          <PortfolioSummaryCard loading={loading} data={data} />
+        </SectionCard>
 
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-2 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Portfolio Value</h2>
+        <SectionCard title="Portfolio Value" className="lg:col-span-2">
           {loading ? (
             <LoadingPlaceholder className="h-64 w-full" />
           ) : (
@@ -121,11 +90,10 @@ const Portfolio = () => {
               </ResponsiveContainer>
             </div>
           )}
-        </div>
+        </SectionCard>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-        <h2 className="text-lg font-semibold mb-4">Holdings</h2>
+      <SectionCard title="Holdings">
         {loading ? (
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, index) => (
@@ -152,7 +120,7 @@ const Portfolio = () => {
             ))}
           </div>
         )}
-      </div>
+      </SectionCard>
     </div>
   )
 }

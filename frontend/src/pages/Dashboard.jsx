@@ -2,12 +2,11 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchDashboard, fetchPortfolio } from '../store/dashboardSlice'
 import usePolling from '../hooks/usePolling'
-import LoadingPlaceholder from '../components/LoadingPlaceholder'
-import {
-  formatCurrency,
-  formatPercent,
-  formatTimestamp,
-} from '../utils/formatters'
+import SectionCard from '../components/SectionCard'
+import PortfolioSummaryCard from '../components/PortfolioSummaryCard'
+import TopMoversCard from '../components/TopMoversCard'
+import NewsListCard from '../components/NewsListCard'
+import AlertsListCard from '../components/AlertsListCard'
 
 /**
  * Dashboard page with portfolio, movers, news, and alerts.
@@ -35,14 +34,6 @@ const Dashboard = () => {
   const isDashboardLoading = dashboard?.loading && !dashboard?.data
   const isPortfolioLoading = portfolio?.loading && !portfolio?.data
 
-  /**
-   * Return Tailwind color class for positive/negative values.
-   * @param {number|string} value
-   * @returns {string}
-   */
-  const changeColor = (value) =>
-    Number(value) >= 0 ? 'text-green-600' : 'text-red-600'
-
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -61,168 +52,27 @@ const Dashboard = () => {
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-1 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Portfolio Summary</h2>
-          {!portfolioSummary && isPortfolioLoading ? (
-            <div className="space-y-3">
-              <LoadingPlaceholder className="h-8 w-32" />
-              <LoadingPlaceholder className="h-6 w-40" />
-              <LoadingPlaceholder className="h-6 w-24" />
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-3xl font-bold">
-                {formatCurrency(portfolioSummary?.totalValue)}
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span
-                  className={`text-lg font-semibold ${changeColor(
-                    portfolioSummary?.totalChange
-                  )}`}
-                >
-                  {formatCurrency(portfolioSummary?.totalChange)}
-                </span>
-                <span
-                  className={`text-sm ${changeColor(
-                    portfolioSummary?.totalChangePercent
-                  )}`}
-                >
-                  {formatPercent(portfolioSummary?.totalChangePercent)}
-                </span>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400">24h portfolio change</p>
-            </div>
-          )}
-        </div>
+        <SectionCard title="Portfolio Summary" className="lg:col-span-1">
+          <PortfolioSummaryCard loading={isPortfolioLoading} data={portfolioSummary} />
+        </SectionCard>
 
-        <div className="bg-white p-6 rounded-lg shadow lg:col-span-2 dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Top Movers</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <p className="text-sm font-semibold text-gray-500 uppercase mb-3 dark:text-gray-400">
-                Gainers
-              </p>
-              <div className="space-y-3">
-                {isDashboardLoading && topGainers.length === 0
-                  ? Array.from({ length: 3 }).map((_, index) => (
-                      <LoadingPlaceholder key={index} className="h-12 w-full" />
-                    ))
-                  : topGainers.map((asset) => (
-                      <div
-                        key={`gainer-${asset.symbol}`}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3 dark:border-gray-800"
-                      >
-                        <div>
-                          <p className="font-semibold">{asset.symbol}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold">
-                            {formatCurrency(asset.currentPrice)}
-                          </p>
-                          <p className={`text-sm ${changeColor(asset.changePercent)}`}>
-                            {formatPercent(asset.changePercent)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-semibold text-gray-500 uppercase mb-3 dark:text-gray-400">
-                Losers
-              </p>
-              <div className="space-y-3">
-                {isDashboardLoading && topLosers.length === 0
-                  ? Array.from({ length: 3 }).map((_, index) => (
-                      <LoadingPlaceholder key={index} className="h-12 w-full" />
-                    ))
-                  : topLosers.map((asset) => (
-                      <div
-                        key={`loser-${asset.symbol}`}
-                        className="flex items-center justify-between rounded-lg border border-gray-100 px-4 py-3 dark:border-gray-800"
-                      >
-                        <div>
-                          <p className="font-semibold">{asset.symbol}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{asset.name}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold">
-                            {formatCurrency(asset.currentPrice)}
-                          </p>
-                          <p className={`text-sm ${changeColor(asset.changePercent)}`}>
-                            {formatPercent(asset.changePercent)}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <SectionCard title="Top Movers" className="lg:col-span-2">
+          <TopMoversCard
+            loading={isDashboardLoading}
+            gainers={topGainers}
+            losers={topLosers}
+          />
+        </SectionCard>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Recent News</h2>
-          <div className="space-y-4">
-            {isDashboardLoading && recentNews.length === 0
-                ? Array.from({ length: 5 }).map((_, index) => (
-                  <LoadingPlaceholder key={index} className="h-12 w-full" />
-                ))
-              : recentNews.map((news) => (
-                  <div
-                    key={news.id}
-                    className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0 dark:border-gray-800"
-                  >
-                    <div>
-                      <p className="font-semibold">{news.title}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {news.source} • {formatTimestamp(news.timestamp)}
-                      </p>
-                    </div>
-                    <span className="text-xs font-semibold uppercase bg-gray-100 text-gray-600 px-2 py-1 rounded-full dark:bg-gray-800 dark:text-gray-300">
-                      {news.category}
-                    </span>
-                  </div>
-                ))}
-          </div>
-        </div>
+        <SectionCard title="Recent News">
+          <NewsListCard loading={isDashboardLoading} items={recentNews} />
+        </SectionCard>
 
-        <div className="bg-white p-6 rounded-lg shadow dark:bg-gray-950 dark:shadow-none dark:border dark:border-gray-800">
-          <h2 className="text-lg font-semibold mb-4">Active Alerts</h2>
-          <div className="space-y-4">
-            {isDashboardLoading && activeAlerts.length === 0
-              ? Array.from({ length: 5 }).map((_, index) => (
-                  <LoadingPlaceholder key={index} className="h-12 w-full" />
-                ))
-              : activeAlerts.map((alert) => {
-                  const severityColor = {
-                    critical: 'bg-red-100 text-red-700',
-                    high: 'bg-orange-100 text-orange-700',
-                    medium: 'bg-yellow-100 text-yellow-700',
-                    low: 'bg-green-100 text-green-700',
-                  }[alert.severity] || 'bg-gray-100 text-gray-600'
-                  return (
-                    <div
-                      key={alert.id}
-                      className="flex items-start justify-between gap-4 border-b border-gray-100 pb-3 last:border-b-0 last:pb-0 dark:border-gray-800"
-                    >
-                      <div>
-                        <p className="font-semibold">{alert.message}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          {formatTimestamp(alert.timestamp)}
-                        </p>
-                      </div>
-                      <span className={`text-xs font-semibold uppercase px-2 py-1 rounded-full ${severityColor}`}>
-                        {alert.severity}
-                      </span>
-                    </div>
-                  )
-                })}
-          </div>
-        </div>
+        <SectionCard title="Active Alerts">
+          <AlertsListCard loading={isDashboardLoading} items={activeAlerts} />
+        </SectionCard>
       </div>
     </div>
   )
