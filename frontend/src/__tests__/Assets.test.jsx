@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react'
-import {act} from 'react';
+import { act } from 'react';
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { renderWithStore } from '../testUtils.jsx'

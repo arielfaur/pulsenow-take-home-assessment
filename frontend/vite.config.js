@@ -7,6 +7,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/setupTests.js',
     globals: true,
+    include: ['src/**/*.test.{js,jsx,ts,tsx}'],
+    exclude: ['e2e/**', '**/e2e/**', 'node_modules/**'],
   },
   server: {
     port: 3000,
